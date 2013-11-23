@@ -1,6 +1,34 @@
 
 <?php
   require_once('/home/users/web/b214/ipg.bumiops/AskHelp/includes/initialize.php');
+
+  
+  function fb_post($accessToken, $message) {
+    $cookie_file_path = "C:/wamp/www/crawler/bestbuy/cookie.txt";
+    $url = 'https://graph.facebook.com/me/feed?';
+    $data = 'method=POST&message='.$message.'&format=json&suppress_http_code=1&access_token='.$accessToken;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+    curl_setopt($ch, CURLOPT_ENCODING, 'identity');
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+    curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file_path);
+    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file_path); 
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
+    curl_setopt($ch, CURLOPT_CAINFO, getcwd() . "/-.facebook.crt");
+    curl_setopt($ch, CURLOPT_POST, 1); 
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data); 
+    curl_setopt($ch, CURLOPT_HEADER, TRUE);
+    $data = curl_exec($ch);
+    if(curl_errno($ch)){
+     echo 'Curl error: ' . curl_error($ch) . "\n";
+     return false;
+    }
+    curl_close($ch);
+    return $data;
+  }
+
   $msisdn = isset($_GET['msisdn']) ? $_GET['msisdn'] : "";
   $text = isset($_GET['text']) ? $_GET['text'] : "";
   $rrn = isset($_GET['rrn']) ? $_GET['rrn'] : "";
@@ -12,7 +40,10 @@
     $message->rrn = $rrn;
     $message->save();
   }
+
 ?>
+
+
 <!doctype html>
 <html>
 <head>
@@ -82,7 +113,7 @@
       var accessToken = FB.getAuthResponse().accessToken;
       $.ajax({
         type:'POST',
-        url:"index.php",
+        url:"extend.php",
         data:"id="+accessToken,
         dataType: "json",
         success:function(data) {

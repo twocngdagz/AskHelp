@@ -1,14 +1,11 @@
 <html>
-<head>
-<link rel="stylesheet" type="text/css" href="//code.jquery.com/jquery-1.10.2.min.js">
-</head>
+<head></head>
 <body>
 <div id="fb-root"></div>
-//code.jquery.com/jquery-1.10.2.min.js
 <script>
   window.fbAsyncInit = function() {
   FB.init({
-    appId      : '556202757797620',
+    appId      : '678013528899084',
     status     : true, // check login status
     cookie     : true, // enable cookies to allow the server to access the session
     xfbml      : true  // parse XFBML
@@ -57,17 +54,10 @@
   // Here we run a very simple test of the Graph API after login is successful. 
   // This testAPI() function is only called in those cases. 
   function testAPI() {
-    var accessToken = FB.getAuthResponse().accessToken;
-    $.ajax({
-      type:'POST',
-      url:"index.php",
-      data:"id="+accessToken,
-      dataType: "json",
-      success:function(data) {
-        console.log('Success Post');
-      }
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Good to see you, ' + response.name + '.');
     });
-
   }
 </script>
 
