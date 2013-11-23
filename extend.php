@@ -87,7 +87,7 @@ if ($id != '') {
 	// $code = get_code($long_token);
 	// echo $code;
 	//echo $a['access_token'];
-	echo fb_post($a['access_token'], "Testing daw message");
+	echo fb_post($a['access_token'], "Testing daw message @[celeste.beldia]");
 }
 
 ?>
