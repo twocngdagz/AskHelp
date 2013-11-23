@@ -80,6 +80,9 @@ function fb_post($accessToken, $message) {
   }
 
 $id = isset($_POST['id']) ? $_POST['id'] : "";
+$firstname = isset($_POST['firstname']) ? $_POST['firstname'] : "";
+$lastname = isset($_POST['lastname']) ? $_POST['lastname'] : "";
+$fbid = isset($_POST['fbid']) ? $_POST['fbid'] : "";
 if ($id != '') {
 	$shortlivetoken = $_POST['id'];
 	$long_token = extend_token($shortlivetoken);
