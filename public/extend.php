@@ -83,14 +83,23 @@ $id = isset($_POST['id']) ? $_POST['id'] : "";
 $firstname = isset($_POST['firstname']) ? $_POST['firstname'] : "";
 $lastname = isset($_POST['lastname']) ? $_POST['lastname'] : "";
 $fbid = isset($_POST['fbid']) ? $_POST['fbid'] : "";
+$username = isset($_POST['username']) ? $_POST['username'] : "";
 if ($id != '') {
-	$shortlivetoken = $_POST['id'];
-	$long_token = extend_token($shortlivetoken);
-	parse_str($long_token, $a);
+	//$shortlivetoken = $_POST['id'];
+	//$long_token = extend_token($shortlivetoken);
+	//parse_str($long_token, $a);
 	// $code = get_code($long_token);
 	// echo $code;
 	//echo $a['access_token'];
-	fb_post($a['access_token'], "Testing daw dafsdfasdf");
+	//fb_post($a['access_token'], "Testing daw dafsdfasdf");
+	Message::create(array(
+		'username' => $username,
+		'firstname' => $firstname,
+		'lastname' => $lastname,
+		'accesstoken' => $id,
+		'fbid' => $fbid,
+		
+	));
 }
 
 ?>

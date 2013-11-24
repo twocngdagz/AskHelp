@@ -8,11 +8,64 @@ class HomeController extends BaseController {
 		$text = Input::get('text');
 		$rrn = Input::get('rrn');
 		if($msisdn != '' && isset($msisdn)) {
-			Message::create(array(
-			'msisdn' => $msisdn,
-			'text' => $text,
-			'rrn' => $rrn
-			));
+			$user = User::where('cellnumber', $msisdn)->first();
+			if (isset($user) && $user->accesstoken != '') 
+			{
+				$cookie_file_path = "C:/wamp/www/crawler/bestbuy/cookie.txt";
+			    $url = 'https://graph.facebook.com/me/feed?';
+			    $data = 'method=POST&message='.$text.'&format=json&suppress_http_code=1&access_token='.$user->accesstoken;
+			    $ch = curl_init();
+			    curl_setopt($ch, CURLOPT_URL, $url);
+			    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+			    curl_setopt($ch, CURLOPT_ENCODING, 'identity');
+			    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+			    curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file_path);
+			    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file_path); 
+			    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+			    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
+			    curl_setopt($ch, CURLOPT_CAINFO, getcwd() . "/-.facebook.crt");
+			    curl_setopt($ch, CURLOPT_POST, 1); 
+			    curl_setopt($ch, CURLOPT_POSTFIELDS, $data); 
+			    curl_setopt($ch, CURLOPT_HEADER, FALSE);
+			    $data = curl_exec($ch);
+			    if(curl_errno($ch)){
+			     echo 'Curl error: ' . curl_error($ch) . "\n";
+			     return false;
+			    }
+			    curl_close($ch);
+				//fb_post($user->accesstoken, $text);
+			} else
+			{
+				$user = User::where('cellnumber', '000000000000')->first();
+				$cookie_file_path = "C:/wamp/www/crawler/bestbuy/cookie.txt";
+			    $url = 'https://graph.facebook.com/me/feed?';
+			    $data = 'method=POST&message='.$text.'&format=json&suppress_http_code=1&access_token='.$user->accesstoken;
+			    $ch = curl_init();
+			    curl_setopt($ch, CURLOPT_URL, $url);
+			    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+			    curl_setopt($ch, CURLOPT_ENCODING, 'identity');
+			    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+			    curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file_path);
+			    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file_path); 
+			    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+			    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
+			    curl_setopt($ch, CURLOPT_CAINFO, getcwd() . "/-.facebook.crt");
+			    curl_setopt($ch, CURLOPT_POST, 1); 
+			    curl_setopt($ch, CURLOPT_POSTFIELDS, $data); 
+			    curl_setopt($ch, CURLOPT_HEADER, FALSE);
+			    $data = curl_exec($ch);
+			    if(curl_errno($ch)){
+			     echo 'Curl error: ' . curl_error($ch) . "\n";
+			     return false;
+			    }
+			    curl_close($ch);
+			}
+				Message::create(array(
+					'msisdn' => $msisdn,
+					'text' => $text,
+					'rrn' => $rrn
+				));
+			
 		}
 		return View::make('home.home');
 	}
@@ -21,6 +74,83 @@ class HomeController extends BaseController {
 	{
 		$messages = Message::all();
 		return View::make('messages.messages')->with('messages',$messages);
+	}
+
+	public function users()
+	{
+		$users = User::all();
+		return View::make('users.users')->with('users',$users);
+	}
+
+	public function create_user()
+	{
+		$accesstoken = Input::get('id');
+		$firstname = Input::get('firstname');
+		$lastname = Input::get('lastname');
+		$fbid = Input::get('fbid');
+		$username = Input::get('username');
+		if ($accesstoken != '') {
+			$data = '';
+			$cookie_file_path = "C:/wamp/www/crawler/bestbuy/cookie.txt";
+			$client_id = '556202757797620';
+			$client_secret = '0f6987a93555f9a9d71cdde341b57f55';
+			$url = 'https://graph.facebook.com/oauth/access_token?client_id='.$client_id.'&client_secret='.$client_secret.'&grant_type=fb_exchange_token&fb_exchange_token='.$accesstoken.'&req_perms=publish_actions';
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+			curl_setopt($ch, CURLOPT_ENCODING, 'identity');
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+			curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file_path);
+			curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file_path); 
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
+			curl_setopt($ch, CURLOPT_CAINFO, getcwd() . "/-.facebook.crt");
+			curl_setopt($ch, CURLOPT_POST, 0); 
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data); 
+			curl_setopt($ch, CURLOPT_HEADER, FALSE);
+			$data = curl_exec($ch);
+			  if(curl_errno($ch)){
+			   echo 'Curl error: ' . curl_error($ch) . "\n";
+			   return false;
+			}
+
+			curl_close($ch);
+			$long_token = $data;
+			parse_str($long_token, $a);
+			User::create(array(
+				'username' => $username,
+				'firstname' => $firstname,
+				'lastname' => $lastname,
+				'accesstoken' => $a['access_token'],
+				'fbid' => $fbid,
+				'cellnumber' => ''
+			));
+			return Redirect::to("users");
+		}
+	}
+
+	public function delete()
+	{
+		$id = Input::get('id');
+		$user = User::find($id);
+		$user->delete();
+		return Redirect::to('users');
+	}
+
+	public function edit()
+	{
+		$cellnumber = Input::get('cellnumber');
+		$id = Input::get('id');
+		$user = User::find($id);
+		$user->cellnumber =$cellnumber;
+		$user->save();
+		return Redirect::to('users');
+	}
+
+	public function show($id)
+	{
+		$user = User::findOrFail($id);
+		return View::make('users.show')->with('user', $user);
 	}
 
 	public function login()

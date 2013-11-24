@@ -18,6 +18,11 @@ Route::get('/', function()
 
 Route::get('/', 'HomeController@index');
 Route::get('/messages', 'HomeController@messages');
+Route::post('/create_user', 'HomeController@create_user');
+Route::post('users/edit', 'HomeController@edit');
+Route::get('users/{id}', 'HomeController@show')->where('id','\d+');
+Route::get('/users', 'HomeController@users');
+Route::post('users/delete', 'HomeController@delete');
 //Route::get('/', array('before' => 'auth','uses'=>'HomeController@index'));
 Route::get('/tasks', array('before' => 'auth','uses'=>'TasksController@tasks'));
 Route::get('/tasks/new', array('before' => 'auth|check_roles','uses'=>'TasksController@newtask'));

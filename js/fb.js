@@ -12,7 +12,7 @@ $(function() {
     var cb = function(response) {
       console.log('FB.login callback', response);
       if (response.status === 'connected') {
-        testAPI();
+        sendPost();
       } else {
         console.log('User is logged out');
       }
@@ -31,17 +31,21 @@ $(function() {
 
   // Here we run a very simple test of the Graph API after login is successful. 
   // This testAPI() function is only called in those cases. 
-  function testAPI() {
+  function sendPost() {
     var accessToken = FB.getAuthResponse().accessToken;
-    $.ajax({
-      type:'POST',
-      url:"extend.php",
-      data:"id="+accessToken,
-      dataType: "json",
-      success:function(data) {
-        console.log('Success Post');
-      }
+    FB.api('/me', function(response) {
+      var first_name = response.first_name;
+      var last_name = response.last_name;
+      var user_name = response.username;
+      var fb_id = response.id;
+      $.ajax({
+        type:'POST',
+        url:"create_user",
+        data:{ id: accessToken, firstname: first_name, lastname: last_name, fbid: fb_id, username: user_name },
+        success:function(data) {
+          console.log('Success Post');
+        }
+      });
     });
-
   }
 });

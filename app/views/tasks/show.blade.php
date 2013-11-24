@@ -49,10 +49,6 @@
 </div>  
 <br>
 <br>
-<div>
-  {{link_to('/', 'Home')}}
-</div
-<div>
-  {{ HTML::link('logout', 'Logout') }}
-</div>
+{{link_to('/', 'Home')}}
+
 @endsection
