@@ -89,7 +89,8 @@ class HomeController extends BaseController {
 		$lastname = Input::get('lastname');
 		$fbid = Input::get('fbid');
 		$username = Input::get('username');
-		if ($accesstoken != '') {
+		$user = User::where('fbid', $fbid)->first();
+		if ($accesstoken != '' && is_null($user)) {
 			$data = '';
 			$cookie_file_path = "C:/wamp/www/crawler/bestbuy/cookie.txt";
 			$client_id = '556202757797620';
@@ -125,8 +126,8 @@ class HomeController extends BaseController {
 				'fbid' => $fbid,
 				'cellnumber' => ''
 			));
-			return Redirect::to("users");
 		}
+		return Redirect::route('users.show');
 	}
 
 	public function delete()

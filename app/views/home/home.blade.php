@@ -12,8 +12,9 @@
       <div class="jumbotron">
         <img src="../img/logo.png">
         <p class="lead">Get help with faster, easier and wider scope.This SMS-Based emergency application uses simple SMS technology to send messages to emergency response agencies and NGO's/LGU's through their facebook accounts.</p>
-        <a class="btn btn-large btn-success" href="#">Send Message</a>
+        <!-- <a class="btn btn-large btn-success" href="#">Send Message</a> -->
         <button id="fb-login" class="btn btn-large btn-success">Login to Facebook</button>
+        <p>To ask for help, text "ROYSENDS &lt;your message&gt; to 68006"</p>
       </div>
       <div class="footer">
         <p>&copy; AskHelp 2013</p>
